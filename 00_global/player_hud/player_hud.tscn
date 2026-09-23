@@ -1,0 +1,95 @@
+[gd_scene format=3 uid="uid://c8bs8c5ytgnx6"]
+
+[ext_resource type="Texture2D" uid="uid://ngbx3kph7mh3" path="res://00_global/player_hud/health_bar_frame.png" id="1_hv14i"]
+[ext_resource type="Script" uid="uid://b1n2ukudnetd1" path="res://00_global/player_hud/player_hud.gd" id="1_vb1bs"]
+[ext_resource type="Resource" uid="uid://pkfbnpumc1gd" path="res://00_global/visual_effects/hit_particle_settings/hit_magic_blue.tres" id="3_26715"]
+
+[sub_resource type="Gradient" id="Gradient_vb1bs"]
+colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_26715"]
+gradient = SubResource("Gradient_vb1bs")
+height = 16
+
+[sub_resource type="Gradient" id="Gradient_tdgrf"]
+colors = PackedColorArray(0.8627451, 0.34117648, 0.34117648, 1, 0.87486136, 0.46619838, 0.46619838, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_4jtec"]
+gradient = SubResource("Gradient_tdgrf")
+
+[sub_resource type="GDScript" id="GDScript_vb1bs"]
+script/source = "extends Button
+
+@export var particle_settings : HitParticleSettings
+
+func _ready() -> void:
+	pressed.connect( _on_pressed )
+	pass 
+
+
+func _on_pressed() -> void:
+	var pos : Vector2 = get_tree().get_first_node_in_group(\"Player\").global_position
+	VisualEffects.hit_particles( pos, Vector2(0, -1), particle_settings )
+	pass
+"
+
+[node name="PlayerHud" type="CanvasLayer" unique_id=865726198]
+layer = 2
+script = ExtResource("1_vb1bs")
+
+[node name="Control" type="Control" parent="." unique_id=609879473]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="HPMarginContainer" type="MarginContainer" parent="Control" unique_id=1848136284]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 215.0
+offset_bottom = 28.0
+
+[node name="NinePatchRect" type="NinePatchRect" parent="Control/HPMarginContainer" unique_id=375997445]
+layout_mode = 2
+texture = ExtResource("1_hv14i")
+region_rect = Rect2(0, 0, 40, 20)
+patch_margin_left = 27
+patch_margin_right = 7
+axis_stretch_horizontal = 1
+
+[node name="HPBar" type="TextureProgressBar" parent="Control/HPMarginContainer/NinePatchRect" unique_id=517799256]
+unique_name_in_owner = true
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 19.0
+offset_top = 6.0
+offset_right = -3.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+value = 50.0
+rounded = true
+nine_patch_stretch = true
+texture_under = SubResource("GradientTexture2D_26715")
+texture_progress = SubResource("GradientTexture2D_4jtec")
+
+[node name="Button" type="Button" parent="Control" unique_id=826088437]
+layout_mode = 0
+offset_left = 355.0
+offset_top = 35.0
+offset_right = 463.0
+offset_bottom = 58.0
+text = "Test particles
+"
+script = SubResource("GDScript_vb1bs")
+particle_settings = ExtResource("3_26715")
